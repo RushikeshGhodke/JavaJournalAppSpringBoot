@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import tech.rushikeshghodke.javajounalapp.entities.JournalEntry;
 import tech.rushikeshghodke.javajounalapp.repositories.JournalEntryRepository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class JournalEntryService {
     }
 
     public void saveJournalEntry (JournalEntry journalEntry) {
+        journalEntry.setDate(LocalDateTime.now());
         journalEntryRepository.save(journalEntry);
     }
 
@@ -34,11 +36,12 @@ public class JournalEntryService {
 
     public JournalEntry updateJournalEntryById (ObjectId id, JournalEntry newEntry) {
         JournalEntry oldEntry = findJournalEntryById(id);
+        System.out.println(oldEntry);
         if (oldEntry != null) {
-            if (oldEntry.getTitle() != newEntry.getTitle()) oldEntry.setTitle(newEntry.getTitle());
-            if (oldEntry.getContent() != newEntry.getContent()) oldEntry.setContent(newEntry.getContent());
+            oldEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : oldEntry.getTitle());
+            oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : oldEntry.getContent());
         }
-        journalEntryRepository.save(newEntry);
-        return newEntry;
+        journalEntryRepository.save(oldEntry);
+        return oldEntry;
     }
 }
